@@ -16,7 +16,7 @@ def pixel2square(row):
 
 
 def displayData(source, indices=None, rows=10, columns=10):
-    # rows, columns = 10, 10
+    # rows, columns = 10,
     if not indices:
         indices = random.sample(range(source.shape[0]), rows * columns)
     fig = np.zeros((20 * rows, 20 * columns))
@@ -194,9 +194,9 @@ if __name__ == '__main__':
     flattend_theta = unrollTheta(Theta)
     flattendD = bp(flattend_theta, flattendX, y)
     D1, D2 = reshape_theta(flattendD)
-    # gradientChecking(Theta,[D1,D2],X,y)
-    # computeAccuracy(X,y,Theta)
+    gradientChecking(Theta, [D1, D2], X, y)
+    computeAccuracy(X, y, Theta)
     # reg_theta=fmincg(myLambda=10.)
     # computeAccuracy(X,y,reg_theta)
-    displayData(source=Theta[0], rows=5, columns=5)
+    # displayData(source=Theta[0], rows=5, columns=5)
     displayData(source=X)

@@ -19,6 +19,7 @@ def pixel2square(row):
     square = row[1:].reshape(20, 20)
     return square.T
 
+
 def displayData(indices=None):
     rows, columns = 10, 10
     if not indices:
@@ -41,7 +42,7 @@ def h(theta, X):
     return 1. / (1. + np.exp(-z))
 
 
-#displayData()
+# displayData()
 
 
 # def costFunction(myTheta, X, myy, myLambda=0.):
@@ -65,32 +66,34 @@ def h(theta, X):
 #     grad = (1. / m) * temp.dot(delta_h) + (myLambda / m) * theta  # shape 401,1
 #     return grad.T
 
-def computeCost(mytheta,myX,myy,mylambda = 0.):
-    m = myX.shape[0] #5000
-    myh = h(mytheta,myX) #shape: (5000,1)
-    term1 = np.log( myh ).dot( -myy.T ) #shape: (5000,5000)
-    term2 = np.log( 1.0 - myh ).dot( 1 - myy.T ) #shape: (5000,5000)
-    left_hand = (term1 - term2) / m #shape: (5000,5000)
-    right_hand = mytheta.T.dot( mytheta ) * mylambda / (2*m) #shape: (1,1)
-    return left_hand + right_hand #shape: (5000,5000)
+def computeCost(mytheta, myX, myy, mylambda=0.):
+    m = myX.shape[0]  # 5000
+    myh = h(mytheta, myX)  # shape: (5000,1)
+    term1 = np.log(myh).dot(-myy.T)  # shape: (5000,5000)
+    term2 = np.log(1.0 - myh).dot(1 - myy.T)  # shape: (5000,5000)
+    left_hand = (term1 - term2) / m  # shape: (5000,5000)
+    right_hand = mytheta.T.dot(mytheta) * mylambda / (2 * m)  # shape: (1,1)
+    return left_hand + right_hand  # shape: (5000,5000)
 
-def costGradient(mytheta,myX,myy,mylambda = 0.):
+
+def costGradient(mytheta, myX, myy, mylambda=0.):
     m = myX.shape[0]
-    #Tranpose y here because it makes the units work out in dot products later
-    #(with the way I've written them, anyway)
-    beta = h(mytheta,myX)-myy.T #shape: (5000,5000)
+    # Tranpose y here because it makes the units work out in dot products later
+    # (with the way I've written them, anyway)
+    beta = h(mytheta, myX) - myy.T  # shape: (5000,5000)
 
-    #regularization skips the first element in theta
-    regterm = mytheta[1:]*(mylambda/m) #shape: (400,1)
+    # regularization skips the first element in theta
+    regterm = mytheta[1:] * (mylambda / m)  # shape: (400,1)
 
-    grad = (1./m)*np.dot(myX.T,beta) #shape: (401, 5000)
-    #regularization skips the first element in theta
+    grad = (1. / m) * np.dot(myX.T, beta)  # shape: (401, 5000)
+    # regularization skips the first element in theta
     grad[1:] = grad[1:] + regterm
-    return grad #shape: (401, 5000)
+    return grad  # shape: (401, 5000)
+
 
 def optimizeTheta(theta, X, y, myLambda=0.):
     result = scipy.optimize.fmin_cg(computeCost, x0=theta, fprime=costGradient, args=(X, y, myLambda), maxiter=80,
-                                    disp=False,full_output=True)
+                                    disp=False, full_output=True)
     return result[0], result[1]
 
 
@@ -108,20 +111,23 @@ def getTheta():
     print("done")
     return Theta
 
-def predictOneVsAll(Theta,row):
-    hypo = np.zeros((10,1))
+
+def predictOneVsAll(Theta, row):
+    hypo = np.zeros((10, 1))
     for i in range(10):
-        hypo[i]=h(Theta[i].T,row)
+        hypo[i] = h(Theta[i].T, row)
     return np.argmax(hypo)
+
 
 Theta = getTheta()
 n_correct, n_total = 0., 0.
 incorrect_indices = []
 for irow in range(X.shape[0]):
     n_total += 1
-    if predictOneVsAll(Theta,X[irow]) == y[irow]:
+    if predictOneVsAll(Theta, X[irow]) == y[irow]:
         n_correct += 1
-    else: incorrect_indices.append(irow)
-print("Training set accuracy: %0.1f%%" %(100*(n_correct/n_total)))
+    else:
+        incorrect_indices.append(irow)
+print("Training set accuracy: %0.1f%%" % (100 * (n_correct / n_total)))
 
 displayData(incorrect_indices[200:300])
