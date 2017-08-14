@@ -19,6 +19,8 @@ data=mx.sym.flatten(data=data)
 #layers
 fc1=mx.sym.FullyConnected(data=data,num_hidden=128)
 act1=mx.sym.Activation(data=fc1,act_type="relu")
+
+
 fc2=mx.sym.FullyConnected(data=act1,num_hidden=64)
 act2=mx.sym.Activation(data=fc2,act_type="relu")
 fc3=mx.sym.FullyConnected(data=act2,num_hidden=10)
@@ -36,5 +38,5 @@ test_iter = mx.io.NDArrayIter(mnist['test_data'],mnist['test_label'],batch_size)
 acc=mx.metric.Accuracy()
 
 mlp_model.score(test_iter,acc)
-
+mx.viz.plot_network(symbol=mlp).view()
 print(acc)
